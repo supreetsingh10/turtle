@@ -10,6 +10,6 @@ class Lexer {
         Tokens *tokens; 
         Lexer(): tokens(new Tokens()) {}
 
-        void read_file(const std::string& file_name); 
+        std::string read_file(const std::string& file_name); 
 };
 

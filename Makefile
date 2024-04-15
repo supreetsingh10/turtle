@@ -20,3 +20,6 @@ $(BINARY): $(OBJS)
 
 clean: 
 	rm -rf $(BUILD_DIR)/**.*
+
+run: $(BINARY)
+	./$(BINARY)

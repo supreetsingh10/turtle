@@ -1,14 +1,20 @@
 #include "../include/lexer.hpp"
-#include <cassert>
+#include <cstddef>
+#include <fstream>
 
 
-void Lexer::read_file(const std::string& file_name) {
-    FILE* f = std::fopen(file_name.c_str(), "r");
-    assert(f != nullptr); 
+std::string Lexer::read_file(const std::string& file_name) {
+    const size_t MAX_SIZE = std::size_t(4096); 
+    std::ifstream stream = std::ifstream(file_name); 
 
-    int c;
-    while ((c = fgetc(f)) != EOF) {
-        std::cout << (char)c << std::endl; 
+    std::string out = std::string(); 
+    std::string buffer = std::string(MAX_SIZE, '\0');
+
+    while (stream.read(&buffer[0], MAX_SIZE)) {
+       out.append(buffer, 0, stream.gcount()); 
     }
+
+    out.append(buffer, 0, stream.gcount());
+    return out;
 }
 
