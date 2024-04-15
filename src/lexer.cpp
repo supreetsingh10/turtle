@@ -2,8 +2,14 @@
 #include <cstddef>
 #include <fstream>
 
+#define SAFE_RELEASE_VECTOR(vec) for(auto e : vec) delete e
 
-std::string Lexer::read_file(const std::string& file_name) {
+
+Lexer::~Lexer() {
+    SAFE_RELEASE_VECTOR(*tokens);
+}
+
+void Lexer::read_file(const std::string& file_name) {
     const size_t MAX_SIZE = std::size_t(4096); 
     std::ifstream stream = std::ifstream(file_name); 
 
@@ -15,6 +21,9 @@ std::string Lexer::read_file(const std::string& file_name) {
     }
 
     out.append(buffer, 0, stream.gcount());
-    return out;
+
+    m_file_buffer = out; 
 }
 
+// Tokenize file 
+// This will be going through the buffer we have generated and then generate the tokens. 

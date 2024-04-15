@@ -9,7 +9,11 @@ class Lexer {
         typedef std::vector<Token*> Tokens;
         Tokens *tokens; 
         Lexer(): tokens(new Tokens()) {}
+        virtual ~Lexer(); 
 
-        std::string read_file(const std::string& file_name); 
+        void read_file(const std::string& file_name); 
+
+    protected:
+        std::string m_file_buffer;
 };
 
