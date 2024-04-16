@@ -11,19 +11,10 @@ int main() {
     std::vector<Token*> *vt = new std::vector<Token*>();
 
     Lexer lexy = Lexer(); 
+    lexy.initialize(); 
+
     lexy.read_file("./some.turt");
-
-    Token *i = new Identifier();
-    Token *l = new  Literal();
-
-    vt->push_back(l);
-    vt->push_back(i);
-
-
-    for (auto t : *vt) {
-        t->parse();
-        delete t;
-    }
+    lexy.generate_tokens();
 
     return 0; 
 }
