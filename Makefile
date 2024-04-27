@@ -19,7 +19,7 @@ $(BINARY): $(OBJS)
 	$(CXX) -o $@ $^
 
 clean: 
-	rm -rf $(BUILD_DIR)/**.*
+	rm -rf $(BUILD_DIR)/*
 
 run: $(BINARY)
 	./$(BINARY)
