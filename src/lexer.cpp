@@ -1,6 +1,7 @@
 #include "../include/lexer.hpp"
 #include <cstddef>
 #include <fstream>
+#include <memory>
 #include "../include/utilities.hpp"
 
 Lexer::~Lexer() {
@@ -18,9 +19,6 @@ void Lexer::initialize() {
     m_source_map['\r'] = SOURCE_TYPE::WHITESPACE; 
 }
 
-void Lexer::generate_tokens() {
-
-}
 
 void Lexer::read_file(const std::string& file_name) {
     const size_t MAX_SIZE = std::size_t(4096); 
@@ -29,13 +27,13 @@ void Lexer::read_file(const std::string& file_name) {
     std::string out = std::string(); 
     std::string buffer = std::string(MAX_SIZE, '\0');
 
-    while (stream.read(&buffer[0], MAX_SIZE)) {
+    while (stream.read(&buffer[0], 1)) {
        out.append(buffer, 0, stream.gcount()); 
     }
 
     out.append(buffer, 0, stream.gcount());
-
-    m_file_buffer = out; 
+    source_code = std::make_unique<Source>();
+    source_code->initialize(out);
 }
 
 // Tokenize file 

@@ -1,6 +1,8 @@
 #pragma  once
 #include <cstdint>
 #include <map>
+#include "../include/source.hpp"
+#include <memory>
 #include <vector>
 #include <string>
 #include "../include/token.hpp"
@@ -16,12 +18,6 @@ enum SOURCE_TYPE {
 class Lexer {
     typedef std::vector<Token*> Tokens;
 
-    struct Next_Token {
-       uint32_t index;
-       TokenTypes next_type;
-       char next_value;
-    };
-
     public: 
         Tokens *tokens; 
 
@@ -34,13 +30,17 @@ class Lexer {
         virtual ~Lexer(); 
 
         void read_file(const std::string& file_name); 
+        void scan(); 
         void generate_tokens(); 
+        // initializes the hash map that has the values for character types
         void initialize();
 
     protected:
         Token* m_pcurrent_token; 
         TokenTypes m_current_type;
-        std::string m_file_buffer;
+        // Add source file here. 
+        std::unique_ptr<Source> source_code; 
+        uint32_t cursor; 
 
         std::map<char, SOURCE_TYPE> m_source_map; 
 };
