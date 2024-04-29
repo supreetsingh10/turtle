@@ -29,9 +29,8 @@ class Lexer {
 
         virtual ~Lexer(); 
 
-        void read_file(const std::string& file_name); 
         void scan(); 
-        void generate_tokens(); 
+        void read_file(const std::string& file_name); 
         // initializes the hash map that has the values for character types
         void initialize();
 

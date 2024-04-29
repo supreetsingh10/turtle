@@ -11,6 +11,7 @@ int main() {
     lexy.initialize(); 
 
     lexy.read_file("./some.turt");
+    lexy.scan(); 
 
     return 0; 
 }
