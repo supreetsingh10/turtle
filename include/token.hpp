@@ -9,7 +9,6 @@ enum TokenTypes {
     NUMBER, // number can be of type integer or float. 
     LITERAL, // strings.
     OPERATORS, // All different kind of operators. 
-    CHARACTER, // when we are reading the 
     KEYWORD, // the syntax of the language that cannot be used as an Identifier. 
 };
 
