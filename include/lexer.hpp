@@ -13,6 +13,7 @@ enum SOURCE_TYPE {
     NUMBERIC,
     ALPHANUMERIC,
     ALPHABET,
+    STRING,
     WHITESPACE,
 }; 
 
@@ -25,15 +26,14 @@ class Lexer {
         Lexer(): tokens(new Tokens()), 
         m_pcurrent_token(nullptr), 
         m_current_type(TokenTypes::NONE) {
-        
         }
 
-        virtual ~Lexer(); 
+        virtual ~Lexer();
 
         SOURCE_TYPE reset_type(SOURCE_TYPE& current_type, SOURCE_TYPE& next_type); 
         void initialize();
         void scan(); 
-        void tokenize(std::string& value, const SOURCE_TYPE& current_type, const SOURCE_TYPE& next_type); 
+        void tokenize(const std::string& value, const SOURCE_TYPE& current_type, const SOURCE_TYPE& next_type); 
         void read_file(const std::string& file_name); 
         // initializes the hash map that has the values for character types
     protected:

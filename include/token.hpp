@@ -26,6 +26,7 @@ class Token {
         }
 
         virtual void parse() = 0;
+
 }; 
 
 class Literal : public Token {
