@@ -8,9 +8,9 @@
 // start reading the file, peak the next token / word, decide it's type, then decide to keep going or terminate the reading. 
 int main() {
     Lexer lexy = Lexer(); 
-    lexy.initialize(); 
 
     lexy.read_file("./some.turt");
+    Token::initialize_map(); 
     lexy.scan(); 
 
     return 0; 
