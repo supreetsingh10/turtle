@@ -3,7 +3,7 @@ CXX=g++
 SRC_DIR := ./src
 INC_DIR := ./include
 BUILD_DIR := ./build
-BINARY := $(BUILD_DIR)/turtle
+BINARY := $(BUILD_DIR)/voodoo
 
 
 SRCS := $(shell find $(SRC_DIR) -name '*.cpp')
