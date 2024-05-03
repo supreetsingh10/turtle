@@ -10,9 +10,9 @@ class Lexer {
     typedef std::vector<Token*> Tokens;
 
     public: 
-        Tokens *tokens; 
+        Tokens *m_vptokens; 
 
-        Lexer(): tokens(new Tokens()), 
+        Lexer(): m_vptokens(new Tokens()), 
         m_pcurrent_token(nullptr), 
         m_current_type(TokenTypes::NONE) {
 
