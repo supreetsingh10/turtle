@@ -1,7 +1,5 @@
 #include "../include/lexer.hpp"
 // tokens can be of type identifier, operator, literals.
-
-
 // Abstract class, where the token types can change. 
 // Tokens can be of type Interger, Identifier, Literal 
 
@@ -9,9 +7,12 @@
 int main() {
     Lexer lexy = Lexer(); 
 
-    lexy.read_file("./some.turt");
+    lexy.read_file("./some.hen");
     Token::initialize_map(); 
     lexy.scan(); 
+
+    for (auto t : *lexy.m_vptokens)
+        t->display(); 
 
     return 0; 
 }
