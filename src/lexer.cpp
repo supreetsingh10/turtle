@@ -41,18 +41,20 @@ void Lexer::scan()
                    m_pcurrent_token = new Literal(); 
                    m_pcurrent_token->set_type(TokenTypes::LITERAL); 
                    break; 
-                case WHITESPACE:
-                   m_pcurrent_token = nullptr; 
-                   break; 
                 case OPERATOR:
                    m_pcurrent_token = new Operators(); 
                    m_pcurrent_token->set_type(TokenTypes::OPERATOR); 
+                case WHITESPACE:
+                   m_pcurrent_token = nullptr; 
+                   break; 
                 default:
                    m_pcurrent_token = nullptr; 
                    break; 
                }
-
         } 
+
+        if(!m_pcurrent_token)
+            continue;
 
         if (source_code->get_file_buffer().peek() != source_code->get_file_buffer().eof()) {
             // if it is not the end. 
@@ -63,7 +65,6 @@ void Lexer::scan()
                m_vptokens->push_back(m_pcurrent_token->make_copy()); 
                delete m_pcurrent_token;
                m_pcurrent_token = nullptr;
-               Utils::logger("Pushed");
             }
         } else {
             // handle the end; 
