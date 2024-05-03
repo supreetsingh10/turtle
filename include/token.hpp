@@ -1,4 +1,6 @@
 #pragma once
+#include "utilities.hpp"
+#include <cstdint>
 #include <map>
 #include <set>
 #include <string>
@@ -10,8 +12,10 @@ enum TokenTypes {
     NUMBER, // number can be of type integer or float. 
     LITERAL, // strings.
     KEYWORD, // the syntax of the language that cannot be used as an Identifier. 
-    // OPERATOR
+    OPERATOR
+};
 
+enum OperatorTypes {
     ADD, // +, -, *, /, >, < , , ;, 
     SUB,
     MUL,
@@ -62,7 +66,9 @@ class Token {
     protected:
         TokenTypes token_type;
         std::string token_value;
-        virtual bool incompatible_type(char next_char) = 0; 
+
+        // if this returns false then it means that the type is compatible, if it returns true, then the type is not compatible. 
+        virtual bool incompatible_type(char next_char); 
 
     public:
         Token(); 
@@ -72,16 +78,24 @@ class Token {
         const TokenTypes get_type() const; 
 
         virtual bool parse(char cur, char next) = 0;
+        virtual bool parse_end(char cur); 
+        virtual void set_type(const TokenTypes& type); 
+        virtual Token* make_copy() = 0; 
+
+        void display() {
+            Utils::logger(this->token_type);
+            Utils::logger(this->token_value);
+        }
 }; 
 
 class Literal : public Token {
     private:
-        int precedence; 
         static std::set<TokenTypes> m_compatible_types; 
 
     protected:
         virtual bool incompatible_type(char next_char) override; 
         bool double_quot_enabled, single_quot_enabled; 
+        virtual Literal* make_copy() override; 
 
     public:
         Literal(); 
@@ -93,7 +107,6 @@ class Literal : public Token {
 
 class Identifier : public Token {
     private:
-        int precedence; 
         static std::set<TokenTypes> m_compatible_types; 
 
 
@@ -102,10 +115,9 @@ class Identifier : public Token {
 
     public:
         Identifier(); 
-
         virtual ~Identifier(); 
-
         virtual bool parse(char cur, char next) override;
+        virtual Identifier* make_copy() override; 
 };
 
 class Numbers: public Token {
@@ -118,6 +130,24 @@ class Numbers: public Token {
     public: 
         Numbers(); 
         virtual ~Numbers(); 
-
         virtual bool parse(char cur, char next) override; 
+        virtual Numbers* make_copy() override; 
+};
+
+class Operators: public Token {
+    private: 
+        static std::set<TokenTypes> m_compatible_types; 
+        static std::map<std::string, OperatorTypes> operator_map; 
+
+    protected:
+        OperatorTypes operator_type;
+        uint32_t precedence;
+
+    public: 
+        Operators(); 
+
+        virtual ~Operators();
+        virtual bool parse(char cur, char next) override; 
+        virtual bool incompatible_type(char next_char) override; 
+        virtual Operators* make_copy() override; 
 };
