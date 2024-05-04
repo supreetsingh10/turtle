@@ -23,7 +23,7 @@ void Token::initialize_map() {
     POPULATE_MAP(m_symbol_map, 91, 96, TokenTypes::OPERATOR);
     POPULATE_MAP(m_symbol_map, 123, 126, TokenTypes::OPERATOR);
 
-    m_symbol_map.insert(std::make_pair('_', TokenTypes::WHITESPACE));
+    m_symbol_map.insert(std::make_pair(' ', TokenTypes::WHITESPACE));
     m_symbol_map.insert(std::make_pair('\n', TokenTypes::WHITESPACE));
     m_symbol_map.insert(std::make_pair('\r', TokenTypes::WHITESPACE));
 
@@ -47,13 +47,22 @@ bool Token::incompatible_type(char next) {
     return false;
 }
 
+const std::string Token::get_value() const {
+    return this->token_value; 
+}
+
+// this is a getter. 
+const TokenTypes Token::get_type() const {
+    return this->token_type; 
+}
+
 TokenTypes Token::get_type(char c) {
     TokenTypes type = NONE;
 
     try {
         type = m_symbol_map.at(c); 
     } catch (std::out_of_range o) {
-        std::cerr << "Character " << c << " is not found " << o.what() << std::endl;  
+        std::cerr << "Character " << (int)c << " is not found " << o.what() << std::endl;  
         assert(!"Character not found");
     }
 
@@ -69,8 +78,7 @@ Literal::~Literal() {
 }
 
 Literal* Literal::make_copy() {
-    Literal* l = new Literal; 
-    l = this; 
+    Literal* l = new Literal(this); 
     return l; 
 }
 
@@ -85,7 +93,6 @@ bool Literal::parse(char cur, char next) {
 bool Literal::incompatible_type(char next) {
     TokenTypes next_type = Token::get_type(next); 
     Token::incompatible_type(next); 
-
     return true;
 }
 
@@ -102,8 +109,7 @@ std::set<TokenTypes> Identifier::m_compatible_types = {TokenTypes::IDENTIFIER, T
 
 
 Identifier* Identifier::make_copy() {
-    Identifier *i = new Identifier;
-    i = this; 
+    Identifier *i = new Identifier(this);
     return i; 
 }
 
@@ -122,7 +128,6 @@ bool Identifier::incompatible_type(char next_char) {
 
 
 Numbers::Numbers() {
-
 }
 
 Numbers::~Numbers() {

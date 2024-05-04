@@ -73,19 +73,20 @@ class Token {
     public:
         Token(); 
         virtual ~Token(); 
+        Token(const Token* t) {
+            Utils::logger("Coppy called for Token");
+            this->token_type = t->token_type;
+            this->token_value = t->token_value; 
+        }
 
         static void initialize_map(); 
         const TokenTypes get_type() const; 
+        const std::string get_value() const; 
 
         virtual bool parse(char cur, char next) = 0;
         virtual bool parse_end(char cur); 
         virtual void set_type(const TokenTypes& type); 
         virtual Token* make_copy() = 0; 
-
-        void display() {
-            Utils::logger(this->token_type);
-            Utils::logger(this->token_value);
-        }
 }; 
 
 class Literal : public Token {
@@ -100,6 +101,10 @@ class Literal : public Token {
     public:
         Literal(); 
         virtual ~Literal(); 
+        Literal(const Literal* l) {
+            this->token_type = l->token_type;
+            this->token_value = l->token_value;
+        }
 
         virtual bool parse(char cur, char next) override; 
 };
@@ -116,6 +121,12 @@ class Identifier : public Token {
     public:
         Identifier(); 
         virtual ~Identifier(); 
+        Identifier(const Identifier* i) {
+            Utils::logger("Coppy called for Identifier");
+            this->token_type = i->token_type;
+            this->token_value = i->token_value; 
+        }
+
         virtual bool parse(char cur, char next) override;
         virtual Identifier* make_copy() override; 
 };
@@ -130,6 +141,12 @@ class Numbers: public Token {
     public: 
         Numbers(); 
         virtual ~Numbers(); 
+        Numbers(const Numbers* n) {
+           Utils::logger("Coppy called for Numbers");
+           this->token_type = n->token_type;  
+           this->token_value = n->token_value;  
+        }
+
         virtual bool parse(char cur, char next) override; 
         virtual Numbers* make_copy() override; 
 };
@@ -145,8 +162,13 @@ class Operators: public Token {
 
     public: 
         Operators(); 
-
         virtual ~Operators();
+        Operators(const Operators* o) {
+           Utils::logger("Coppy called for Operators");
+           this->token_type = o->token_type; 
+           this->token_value = o->token_value; 
+        }
+
         virtual bool parse(char cur, char next) override; 
         virtual bool incompatible_type(char next_char) override; 
         virtual Operators* make_copy() override; 
