@@ -11,8 +11,11 @@ int main() {
     Token::initialize_map(); 
     lexy.scan(); 
 
+    Utils::logger("Works fine");
     for (auto t : *lexy.m_vptokens)
-        t->display(); 
+        std::cout << t->get_value() << " " << t->get_type() << std::endl; 
+
+    Utils::logger("Works fine");
 
     return 0; 
 }
