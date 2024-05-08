@@ -4,6 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include "../include/operators.hpp"
 
 enum TokenTypes {
     NONE,
@@ -15,48 +16,6 @@ enum TokenTypes {
     OPERATOR
 };
 
-enum OperatorTypes {
-    ADD, // +, -, *, /, >, < , , ;, 
-    SUB,
-    MUL,
-    DIV,
-    GRT_THN,
-    LSS_THN,
-    EQUAL,
-    R_PAREN,
-    L_PAREN,
-    R_CURL,
-    L_CURL,
-    COMMA,
-    SEM_COM,
-    R_SQBRA,
-    L_SQBRA,
-    UNDER_SC,
-    DASH,
-    AT_RATE,
-    DOLLAR,
-    QUES,
-    STRAIGHT,
-    TILDE,
-    BACK_TICK,
-    HASH,
-    PERCENT,
-    EXCLAIM,
-    CARET,
-    AMPERSAND,
-    BACK_SLASH,
-
-    // These are single and double quotes. 
-    // They will be later decided if they are right or left. 
-    D_QUOTES,
-    S_QUOTES,
-
-    R_DQUOT,
-    L_DQUOT,
-    R_SINQUOT,
-    L_SINQUOT,
-};
-
 
 class Token {
     public:
@@ -66,6 +25,7 @@ class Token {
     protected:
         TokenTypes token_type;
         std::string token_value;
+        uint32_t m_line_number; 
 
         // if this returns false then it means that the type is compatible, if it returns true, then the type is not compatible. 
         virtual bool incompatible_type(char next_char) = 0; 
@@ -76,16 +36,19 @@ class Token {
         Token(const Token* t) {
             this->token_type = t->token_type;
             this->token_value = t->token_value; 
+            this->m_line_number = t->m_line_number; 
         }
 
         static void initialize_map(); 
         const TokenTypes get_type() const; 
         const std::string get_value() const; 
+        virtual Token* make_copy() = 0; 
 
         virtual bool parse(char cur, char next) = 0;
         virtual bool parse_end(char cur); 
+
         virtual void set_type(const TokenTypes& type); 
-        virtual Token* make_copy() = 0; 
+        virtual void set_line_number(const uint32_t line_number); 
 }; 
 
 class Literal : public Token {
@@ -103,6 +66,7 @@ class Literal : public Token {
         Literal(const Literal* l) {
             this->token_type = l->token_type;
             this->token_value = l->token_value;
+            this->m_line_number = l->m_line_number;
         }
 
         virtual bool parse(char cur, char next) override; 
@@ -123,6 +87,7 @@ class Identifier : public Token {
         Identifier(const Identifier* i) {
             this->token_type = i->token_type;
             this->token_value = i->token_value; 
+            this->m_line_number = i->m_line_number; 
         }
 
         virtual bool parse(char cur, char next) override;
@@ -142,20 +107,27 @@ class Numbers: public Token {
         Numbers(const Numbers* n) {
            this->token_type = n->token_type;  
            this->token_value = n->token_value;  
+           this->m_line_number = n->m_line_number; 
         }
 
         virtual bool parse(char cur, char next) override; 
         virtual Numbers* make_copy() override; 
 };
 
+
+struct Operator {
+    OperatorEnum operator_enum;
+    uint32_t arg_count; 
+    int precedence;
+};
+
 class Operators: public Token {
     private: 
         static std::set<TokenTypes> m_compatible_types; 
-        static std::map<std::string, OperatorTypes> operator_map; 
+        static std::map<std::string, Operator> operator_map; 
 
     protected:
-        OperatorTypes operator_type;
-        uint32_t precedence;
+        Operator operator_type;
 
     public: 
         Operators(); 
@@ -164,9 +136,10 @@ class Operators: public Token {
            this->token_type = o->token_type; 
            this->token_value = o->token_value; 
            this->operator_type = o->operator_type; 
-           this->precedence = o->precedence;
+           this->m_line_number = o->m_line_number;
         }
 
+        bool check_set_valid_token_type(); 
         virtual bool parse(char cur, char next) override; 
         virtual bool incompatible_type(char next_char) override; 
         virtual Operators* make_copy() override; 

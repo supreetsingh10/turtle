@@ -19,6 +19,16 @@ void Lexer::read_file(const std::string& file_name)
 }
 
 void Lexer::tokenize() {
+    // this should have functions which will check if
+    // the token generated is a keyword.
+    // Operator's type
+    if(m_pcurrent_token->get_type() == TokenTypes::IDENTIFIER) {
+       // check for keyword 
+    } else if (m_pcurrent_token->get_type() == TokenTypes::OPERATOR) {
+        Operator* ops = dynamic_cast<Operator*>(m_pcurrent_token); 
+        ops->check_set_valid_token(); 
+    
+    }
     m_vptokens->push_back(m_pcurrent_token->make_copy()); 
     delete m_pcurrent_token; 
     m_pcurrent_token = nullptr;
@@ -34,6 +44,9 @@ void Lexer::scan()
     while (source_code->get_file_buffer().good()) 
     {
         char current_char = source_code->get_file_buffer().get(); 
+        if(current_char == '\n') {
+            ++m_line_number; 
+        }
         // EOF character is -1; 
         if ((int)current_char != -1) {
             if (m_pcurrent_token == nullptr) {

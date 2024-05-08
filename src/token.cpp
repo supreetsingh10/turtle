@@ -1,5 +1,6 @@
 #include "../include/token.hpp"
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <map>
 #include <set>
@@ -33,6 +34,10 @@ void Token::initialize_map() {
 // this will function like this for everyting. 
 void Token::set_type(const TokenTypes& type) {
     this->token_type = type; 
+}
+
+void Token::set_line_number(const uint32_t line_number) {
+    m_line_number = line_number;
 }
 
 bool Token::parse_end(char c) {
@@ -140,7 +145,7 @@ bool Numbers::incompatible_type(char next) {
 Operators::Operators() {}
 Operators::~Operators() {}
 
-std::map<std::string, OperatorTypes> Operators::operator_map; 
+// std::map<std::string, OperatorTypes> Operators::operator_map; 
 bool Operators::parse(char cur, char next) {
     token_value += cur; 
     return this->incompatible_type(next); 
@@ -149,6 +154,11 @@ bool Operators::parse(char cur, char next) {
 std::set<TokenTypes> Operators::m_compatible_types; 
 bool Operators::incompatible_type(char next) {
     return false;
+}
+
+bool Operators::check_set_valid_token_type() {
+
+    return true;
 }
 
 Operators* Operators::make_copy() {
