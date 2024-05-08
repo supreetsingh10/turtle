@@ -40,13 +40,6 @@ bool Token::parse_end(char c) {
     return true; 
 }
 
-bool Token::incompatible_type(char next) {
-    if (TokenTypes::WHITESPACE == m_symbol_map[next])
-        return true; 
-
-    return false;
-}
-
 const std::string Token::get_value() const {
     return this->token_value; 
 }
@@ -70,20 +63,17 @@ TokenTypes Token::get_type(char c) {
 }
 
 Literal::Literal() {
-
 }
 
 Literal::~Literal() {
-
 }
 
 Literal* Literal::make_copy() {
-    Literal* l = new Literal(this); 
-    return l; 
+    return new Literal(this); 
 }
 
+// will parse as long as there are quotes. So avoid this.
 std::set<TokenTypes> Literal::m_compatible_types; 
-
 bool Literal::parse(char cur, char next) {
     this->token_value += cur; 
     return incompatible_type(next); 
@@ -92,25 +82,21 @@ bool Literal::parse(char cur, char next) {
 // We will need a class seperate for Operators and then we will need to add incompatible_types there, there will be a sub enum for specific operators. 
 bool Literal::incompatible_type(char next) {
     TokenTypes next_type = Token::get_type(next); 
-    Token::incompatible_type(next); 
     return true;
 }
 
 
 Identifier::Identifier() {
-
 }
 
 Identifier::~Identifier() {
-
 }
 
 std::set<TokenTypes> Identifier::m_compatible_types = {TokenTypes::IDENTIFIER, TokenTypes::NUMBER}; 
 
 
 Identifier* Identifier::make_copy() {
-    Identifier *i = new Identifier(this);
-    return i; 
+     return new Identifier(this); 
 }
 
 bool Identifier::parse(char cur, char next) {
@@ -119,9 +105,9 @@ bool Identifier::parse(char cur, char next) {
 }
 
 bool Identifier::incompatible_type(char next_char) {
-    bool flag = Token::incompatible_type(next_char); 
-    if(Identifier::m_compatible_types.find(m_symbol_map[next_char]) != m_compatible_types.end())
+    if(Identifier::m_compatible_types.find(m_symbol_map[next_char]) != m_compatible_types.end()) {
         return false;
+    }
 
     return true;
 }
@@ -135,45 +121,36 @@ Numbers::~Numbers() {
 
 
 Numbers* Numbers::make_copy() {
-    Numbers* n = new Numbers(); 
-    n = this;
-    return n;
+    return new Numbers(this); 
 }
 
-std::set<TokenTypes> Numbers::m_compatible_types; 
-
+std::set<TokenTypes> Numbers::m_compatible_types = {TokenTypes::OPERATOR, TokenTypes::NUMBER};
 bool Numbers::parse(char cur, char next) {
     this->token_value += cur; 
     return this->incompatible_type(next); 
 }
 
 bool Numbers::incompatible_type(char next) {
-    Token::incompatible_type(next); 
-    return false;
+    if(Numbers::m_compatible_types.find(m_symbol_map[next]) != m_compatible_types.end())
+        return false;
+
+    return true;
 }
 
-
-std::set<TokenTypes> Operators::m_compatible_types; 
-std::map<std::string, OperatorTypes> Operators::operator_map; 
-
 Operators::Operators() {}
-
 Operators::~Operators() {}
 
+std::map<std::string, OperatorTypes> Operators::operator_map; 
 bool Operators::parse(char cur, char next) {
     token_value += cur; 
     return this->incompatible_type(next); 
 }
 
-// can have whitespace in super.
+std::set<TokenTypes> Operators::m_compatible_types; 
 bool Operators::incompatible_type(char next) {
-    bool flag = Token::incompatible_type(next); 
-    return flag;
+    return false;
 }
 
-
 Operators* Operators::make_copy() {
-    Operators *o = new Operators(); 
-    o = this; 
-    return 0; 
+     return new Operators(this); 
 }

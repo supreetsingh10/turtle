@@ -22,6 +22,7 @@ class Lexer {
 
         void scan(); 
         void read_file(const std::string& file_name); 
+        void tokenize(); 
         // initializes the hash map that has the values for character types
         
     protected:

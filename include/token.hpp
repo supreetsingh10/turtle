@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities.hpp"
+// #include "utilities.hpp"
 #include <cstdint>
 #include <map>
 #include <set>
@@ -68,13 +68,12 @@ class Token {
         std::string token_value;
 
         // if this returns false then it means that the type is compatible, if it returns true, then the type is not compatible. 
-        virtual bool incompatible_type(char next_char); 
+        virtual bool incompatible_type(char next_char) = 0; 
 
     public:
         Token(); 
         virtual ~Token(); 
         Token(const Token* t) {
-            Utils::logger("Coppy called for Token");
             this->token_type = t->token_type;
             this->token_value = t->token_value; 
         }
@@ -122,7 +121,6 @@ class Identifier : public Token {
         Identifier(); 
         virtual ~Identifier(); 
         Identifier(const Identifier* i) {
-            Utils::logger("Coppy called for Identifier");
             this->token_type = i->token_type;
             this->token_value = i->token_value; 
         }
@@ -142,7 +140,6 @@ class Numbers: public Token {
         Numbers(); 
         virtual ~Numbers(); 
         Numbers(const Numbers* n) {
-           Utils::logger("Coppy called for Numbers");
            this->token_type = n->token_type;  
            this->token_value = n->token_value;  
         }
@@ -164,9 +161,10 @@ class Operators: public Token {
         Operators(); 
         virtual ~Operators();
         Operators(const Operators* o) {
-           Utils::logger("Coppy called for Operators");
            this->token_type = o->token_type; 
            this->token_value = o->token_value; 
+           this->operator_type = o->operator_type; 
+           this->precedence = o->precedence;
         }
 
         virtual bool parse(char cur, char next) override; 

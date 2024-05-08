@@ -18,14 +18,23 @@ void Lexer::read_file(const std::string& file_name)
     source_code->initialize(file_name);
 }
 
-// m_pcurrent_token; 
-// scans the file buffer line by line in the source. 
+void Lexer::tokenize() {
+    m_vptokens->push_back(m_pcurrent_token->make_copy()); 
+    delete m_pcurrent_token; 
+    m_pcurrent_token = nullptr;
+}
+
+// This scans the file from the start to the end and it goes character by character. 
+// The current_char type is checked and set. 
+// If the current_char type is valid then it goes forward peeks the next character and goes on in the loop. 
+// If the next character is incompatible then it breaks the loop, copies the token and then pushes it. 
 void Lexer::scan() 
 {    
     std::string word; 
     while (source_code->get_file_buffer().good()) 
     {
         char current_char = source_code->get_file_buffer().get(); 
+        // EOF character is -1; 
         if ((int)current_char != -1) {
             if (m_pcurrent_token == nullptr) {
                assert((int)current_char != -1);
@@ -39,7 +48,11 @@ void Lexer::scan()
                        m_pcurrent_token = new Numbers(); 
                        m_pcurrent_token->set_type(TokenTypes::NUMBER); 
                        break;
-                   // Will need to handle the double and single quotes here. 
+                       // For literals to work
+                       // We will need to check if they are initializing with Single or double quotes. 
+                       // if single quote, then it is a character, else it is a string. 
+                       // We need to enforce the length for single quote character to be 1. 
+                       // Even whitespaces will be valid inside of a string / literal. 
                     case LITERAL: 
                        m_pcurrent_token = new Literal(); 
                        m_pcurrent_token->set_type(TokenTypes::LITERAL); 
@@ -64,20 +77,13 @@ void Lexer::scan()
                 char next_char = source_code->get_file_buffer().peek(); 
                 bool incompatible = m_pcurrent_token->parse(current_char, next_char); 
 
-                if(incompatible) {
-                   auto inject = m_pcurrent_token->make_copy();
-                   m_vptokens->push_back(inject); 
-                   Utils::logger("Value pushed -> ");
-                   Utils::logger(m_pcurrent_token->get_value());
-                   delete m_pcurrent_token;
-                   m_pcurrent_token = nullptr;
+                if (incompatible) {
+                    tokenize(); 
                 }
             } else {
                 // handle the end; 
                 if(m_pcurrent_token->parse_end(current_char)) {
-                   m_vptokens->push_back(m_pcurrent_token->make_copy()); 
-                   delete m_pcurrent_token;
-                   m_pcurrent_token = nullptr;
+                   tokenize(); 
                    break;
                 }
             }
