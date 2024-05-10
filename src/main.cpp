@@ -2,7 +2,8 @@
 // tokens can be of type identifier, operator, literals.
 // Abstract class, where the token types can change. 
 // Tokens can be of type Interger, Identifier, Literal 
-#if DEBUG
+#define TOKENSHOWER true
+#if TOKENSHOWER
 #include <iostream>
 #endif
 
@@ -14,7 +15,7 @@ int main() {
     Token::initialize_map(); 
     lexy.scan(); 
 
-#if DEBUG
+#if TOKENSHOWER
     for (auto t : *lexy.m_vptokens)
         std::cout << t->get_value() << " " << t->get_type() << std::endl; 
 #endif
