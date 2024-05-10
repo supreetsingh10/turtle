@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 enum OperatorEnum {
     ADD, // +, -, *, /, >, < , , ;, 
     SUB,
@@ -31,6 +30,7 @@ enum OperatorEnum {
     CARET,
     AMPERSAND,
     BACK_SLASH,
+    DOT,
 
     // These are single and double quotes. 
     // They will be later decided if they are right or left. 
@@ -43,3 +43,30 @@ enum OperatorEnum {
     L_SINQUOT,
 };
 
+
+struct Operator {
+    OperatorEnum operator_enum;
+    // uint32_t arg_count; 
+    int precedence;
+
+    // added to fix the compiler warning.
+    Operator() {
+    }
+
+    // added to fix the macro.
+    Operator(OperatorEnum op_enum, int prec):
+        operator_enum(op_enum), precedence(prec) 
+    {
+    
+    }
+
+    Operator(const Operator* ops) {
+       this->operator_enum = ops->operator_enum;
+       this->precedence = ops->precedence; 
+    }
+};
+
+
+#ifndef OperatorGenerator
+#define OperatorGenerator(op_enum, preced) Operator(op_enum, int)
+#endif

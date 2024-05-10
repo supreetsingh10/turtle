@@ -115,19 +115,14 @@ class Numbers: public Token {
 };
 
 
-struct Operator {
-    OperatorEnum operator_enum;
-    uint32_t arg_count; 
-    int precedence;
-};
 
 class Operators: public Token {
     private: 
         static std::set<TokenTypes> m_compatible_types; 
-        static std::map<std::string, Operator> operator_map; 
+        static std::map<std::string, Operator> OperatorMap; 
 
     protected:
-        Operator operator_type;
+        Operator m_operator_type;
 
     public: 
         Operators(); 
@@ -135,7 +130,7 @@ class Operators: public Token {
         Operators(const Operators* o) {
            this->token_type = o->token_type; 
            this->token_value = o->token_value; 
-           this->operator_type = o->operator_type; 
+           this->m_operator_type = o->m_operator_type; 
            this->m_line_number = o->m_line_number;
         }
 
