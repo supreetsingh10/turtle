@@ -25,10 +25,12 @@ void Lexer::tokenize() {
     if(m_pcurrent_token->get_type() == TokenTypes::IDENTIFIER) {
        // check for keyword 
     } else if (m_pcurrent_token->get_type() == TokenTypes::OPERATOR) {
-        Operator* ops = dynamic_cast<Operator*>(m_pcurrent_token); 
-        ops->check_set_valid_token(); 
-    
+        Operators* ops = dynamic_cast<Operators*>(m_pcurrent_token); 
+        ops->check_set_valid_token_type();
     }
+#if DEBUG
+    Utils::logger(m_pcurrent_token->get_value());
+#endif
     m_vptokens->push_back(m_pcurrent_token->make_copy()); 
     delete m_pcurrent_token; 
     m_pcurrent_token = nullptr;
@@ -71,9 +73,16 @@ void Lexer::scan()
                        m_pcurrent_token->set_type(TokenTypes::LITERAL); 
                        break; 
                     case OPERATOR:
+#if DEBUG
+                       Utils::logger("Operator found");
+#endif
                        m_pcurrent_token = new Operators(); 
                        m_pcurrent_token->set_type(TokenTypes::OPERATOR); 
+                       break;
                     case WHITESPACE:
+#if DEBUG
+                       Utils::logger("WHITESPACE found");
+#endif
                        m_pcurrent_token = nullptr; 
                        break; 
                     default:
