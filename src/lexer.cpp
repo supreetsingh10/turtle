@@ -18,12 +18,15 @@ void Lexer::read_file(const std::string& file_name)
     source_code->initialize(file_name);
 }
 
+
+// this should have functions which will check if
+// the token generated is a keyword.
+// Operator's type
 void Lexer::tokenize() {
-    // this should have functions which will check if
-    // the token generated is a keyword.
-    // Operator's type
-    if(m_pcurrent_token->get_type() == TokenTypes::IDENTIFIER) {
-       // check for keyword 
+    if(m_pcurrent_token->get_type() == TokenTypes::IDENTIFIER) 
+    {
+        Identifier* iden = dynamic_cast<Identifier*>(m_pcurrent_token); 
+        iden->check_set_keyword();
     } else if (m_pcurrent_token->get_type() == TokenTypes::OPERATOR) {
         Operators* ops = dynamic_cast<Operators*>(m_pcurrent_token); 
         ops->check_set_valid_token_type();
@@ -68,6 +71,8 @@ void Lexer::scan()
                        // if single quote, then it is a character, else it is a string. 
                        // We need to enforce the length for single quote character to be 1. 
                        // Even whitespaces will be valid inside of a string / literal. 
+                       //
+                       // Literal will only stop parsing when 
                     case LITERAL: 
                        m_pcurrent_token = new Literal(); 
                        m_pcurrent_token->set_type(TokenTypes::LITERAL); 
@@ -75,6 +80,7 @@ void Lexer::scan()
                     case OPERATOR:
 #if DEBUG
                        Utils::logger("Operator found");
+                       std::cout << current_char << std::endl; 
 #endif
                        m_pcurrent_token = new Operators(); 
                        m_pcurrent_token->set_type(TokenTypes::OPERATOR); 
