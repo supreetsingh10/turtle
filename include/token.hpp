@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <map>
 #include <set>
+#include <stack>
 #include <string>
 #include "../include/operators.hpp"
 
@@ -56,8 +57,11 @@ class Literal : public Token {
         static std::set<TokenTypes> m_compatible_types; 
 
     protected:
+        // So the idea behind the stack is that we will push the quote that is used to initialize the string. 
+        // We will pop out the quote when we find the same quote and push it on the token thing. 
+        std::stack<char> m_stack_valid_quotes; 
+
         virtual bool incompatible_type(char next_char) override; 
-        bool double_quot_enabled, single_quot_enabled; 
         virtual Literal* make_copy() override; 
 
     public:
@@ -70,13 +74,15 @@ class Literal : public Token {
         }
 
         virtual bool parse(char cur, char next) override; 
+        void mark_start(char quote); 
+        void mark_end(char quote); 
 };
 
 
 class Identifier : public Token {
     private:
         static std::set<TokenTypes> m_compatible_types; 
-
+        static std::set<std::string> m_set_keywords; 
 
     protected:
         virtual bool incompatible_type(char next_char) override; 
@@ -92,6 +98,7 @@ class Identifier : public Token {
 
         virtual bool parse(char cur, char next) override;
         virtual Identifier* make_copy() override; 
+        void check_set_keyword(); 
 };
 
 class Numbers: public Token {
@@ -100,6 +107,7 @@ class Numbers: public Token {
 
     protected:
         virtual bool incompatible_type(char next_char) override; 
+        bool decimal_added = false; 
 
     public: 
         Numbers(); 
@@ -113,8 +121,6 @@ class Numbers: public Token {
         virtual bool parse(char cur, char next) override; 
         virtual Numbers* make_copy() override; 
 };
-
-
 
 class Operators: public Token {
     private: 

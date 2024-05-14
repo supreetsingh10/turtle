@@ -1,1 +1,8 @@
-let hello
+let hello = 666;
+hello = 666 + 10;
+let x = 666+10;
+x = x * 10;
+
+let name = "Jimmy";
+name = +"Hendrix";
+print(name) == "JimmyHendrix";
