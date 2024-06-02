@@ -46,6 +46,7 @@ void Lexer::tokenize() {
 void Lexer::scan() 
 {    
     std::string word; 
+
     while (source_code->get_file_buffer().good()) 
     {
         char current_char = source_code->get_file_buffer().get(); 

@@ -119,7 +119,17 @@ void Identifier::check_set_keyword() {
 }
 
 std::set<TokenTypes> Identifier::m_compatible_types = {TokenTypes::IDENTIFIER, TokenTypes::NUMBER}; 
-std::set<std::string> Identifier::m_set_keywords = {"let", "int", "str", "deci", "for", "loop"}; 
+
+std::set<std::string> Identifier::m_set_keywords = {
+    "let", 
+    "int", 
+    "str", 
+    "deci", 
+    "for", 
+    "loop",
+    "func"
+}; 
+
 
 Identifier* Identifier::make_copy() {
      return new Identifier(this); 
@@ -218,7 +228,11 @@ std::map<std::string, Operator> Operators::OperatorMap = {
     },
 {
         ";", Operator(OperatorEnum::SEM_COM, 1)
-    },
+    }, 
+{
+    ":", Operator(OperatorEnum::COLON, 1)
+
+},
 {
         "[", Operator(OperatorEnum::R_SQBRA, 1)
     },

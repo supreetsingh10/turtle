@@ -14,6 +14,7 @@ enum OperatorEnum {
     L_CURL,
     COMMA,
     SEM_COM,
+    COLON,
     R_SQBRA,
     L_SQBRA,
     UNDER_SC,
@@ -32,7 +33,6 @@ enum OperatorEnum {
     BACK_SLASH,
     DOT,
     EQUALS,
-
     // These are single and double quotes. 
     // They will be later decided if they are right or left. 
     D_QUOTES,
